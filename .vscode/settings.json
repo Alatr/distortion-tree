@@ -1,0 +1,28 @@
+{
+  "editor.formatOnSave": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "editor.tabSize": 2,
+  "git.autofetch": true,
+  "editor.autoClosingBrackets": "always",
+  "editor.multiCursorModifier": "ctrlCmd",
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/prod": true
+  },
+  "editor.fastScrollSensitivity": 10,
+  "editor.detectIndentation": false,
+  "editor.snippetSuggestions": "top",
+  "editor.maxTokenizationLineLength": 5000000000,
+  "editor.renderWhitespace": "boundary",
+  "editor.formatOnPaste": true,
+  "editor.insertSpaces": true,
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescriptreact",
+    "typescript",
+  ],
+  "eslint.autoFixOnSave": true
+}

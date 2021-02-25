@@ -1,10 +1,10 @@
-import * as THREE from 'three';
-import { Effect } from 'postprocessing';
+import * as THREE from "three";
+import { Effect } from "postprocessing";
 
 export class WaterEffect extends Effect {
   constructor(options = {}) {
-    super('WaterEffect', fragment, {
-      uniforms: new Map([['uTexture', new THREE.Uniform(options.texturee)]]),
+    super("WaterEffect", fragment, {
+      uniforms: new Map([["uTexture", new THREE.Uniform(options.texture)]])
     });
   }
 }
@@ -13,10 +13,11 @@ export default WaterEffect;
 const fragment = `
 
 uniform sampler2D uTexture;
+#define PI 3.14159265359
 
 void mainUv(inout vec2 uv) {
         vec4 tex = texture2D(uTexture, uv);
-        float angle = -((tex.r) * (3.14 * 2.) - 3.14) ;
+        float angle = -((tex.r) * (PI * 2.) - PI) ;
         float vx = -(tex.r *2. - 1.);
         float vy = -(tex.g *2. - 1.);
         float intensity = tex.b;

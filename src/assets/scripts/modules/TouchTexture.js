@@ -1,6 +1,8 @@
-import * as THREE from 'three';
+import * as THREE from "three";
 
-const easeOutSine = (t, b, c, d) => c * Math.sin((t / d) * (Math.PI / 2)) + b;
+const easeOutSine = (t, b, c, d) => {
+  return c * Math.sin((t / d) * (Math.PI / 2)) + b;
+};
 
 const easeOutQuad = (t, b, c, d) => {
   t /= d;
@@ -28,27 +30,26 @@ export default class TouchTexture {
   }
 
   initTexture() {
-    this.canvas = document.createElement('canvas');
+    this.canvas = document.createElement("canvas");
     this.canvas.width = this.width;
     this.canvas.height = this.height;
-    this.ctx = this.canvas.getContext('2d');
-    this.ctx.fillStyle = 'black';
+    this.ctx = this.canvas.getContext("2d");
+    this.ctx.fillStyle = "black";
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     this.texture = new THREE.Texture(this.canvas);
-    this.canvas.id = 'touchTexture';
+    this.canvas.id = "touchTexture";
     // this.canvas.style.width = this.canvas.style.height = `${
     //   this.canvas.width
     // }px`;
   }
-
   update(delta) {
     this.clear();
-    const { speed } = this;
+    let speed = this.speed;
     this.trail.forEach((point, i) => {
-      const f = point.force * speed * (1 - point.age / this.maxAge);
-      const { x } = point;
-      const { y } = point;
+      let f = point.force * speed * (1 - point.age / this.maxAge);
+      let x = point.x;
+      let y = point.y;
 
       point.x += point.vx * f;
       point.y += point.vy * f;
@@ -70,23 +71,21 @@ export default class TouchTexture {
     // this.test();
     this.texture.needsUpdate = true;
   }
-
   clear() {
-    this.ctx.fillStyle = 'black';
+    this.ctx.fillStyle = "black";
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
-
   addTouch(point) {
     let force = 0;
     let vx = 0;
     let vy = 0;
-    const { last } = this;
+    const last = this.last;
     if (last) {
       const dx = point.x - last.x;
       const dy = point.y - last.y;
       if (dx === 0 && dy === 0) return;
       const dd = dx * dx + dy * dy;
-      const d = Math.sqrt(dd);
+      let d = Math.sqrt(dd);
       vx = dx / d;
       vy = dy / d;
 
@@ -96,18 +95,15 @@ export default class TouchTexture {
     }
     this.last = {
       x: point.x,
-      y: point.y,
+      y: point.y
     };
-    this.trail.push({
-      x: point.x, y: point.y, age: 0, force, vx, vy,
-    });
+    this.trail.push({ x: point.x, y: point.y, age: 0, force, vx, vy });
   }
-
   drawPoint(point) {
-    const { ctx } = this;
+    const ctx = this.ctx;
     const pos = {
       x: point.x * this.width,
-      y: (1 - point.y) * this.height,
+      y: (1 - point.y) * this.height
     };
 
     let intensity = 1;
@@ -119,23 +115,23 @@ export default class TouchTexture {
         1 - (point.age - this.maxAge * 0.3) / (this.maxAge * 0.7),
         0,
         1,
-        1,
+        1
       );
     }
     intensity *= point.force;
 
-    const { radius } = this;
-    const color = `${((point.vx + 1) / 2) * 255}, ${((point.vy + 1) / 2)
-      * 255}, ${intensity * 255}`;
+    const radius = this.radius;
+    let color = `${((point.vx + 1) / 2) * 255}, ${((point.vy + 1) / 2) *
+      255}, ${intensity * 255}`;
 
-    const offset = this.size * 5;
+    let offset = this.size * 5;
     ctx.shadowOffsetX = offset; // (default 0)
     ctx.shadowOffsetY = offset; // (default 0)
     ctx.shadowBlur = radius * 1; // (default 0)
     ctx.shadowColor = `rgba(${color},${0.2 * intensity})`; // (default transparent black)
 
     this.ctx.beginPath();
-    this.ctx.fillStyle = 'rgba(255,0,0,1)';
+    this.ctx.fillStyle = "rgba(255,0,0,1)";
     this.ctx.arc(pos.x - offset, pos.y - offset, radius, 0, Math.PI * 2);
     this.ctx.fill();
   }

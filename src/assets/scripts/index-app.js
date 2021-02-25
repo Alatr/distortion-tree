@@ -9,12 +9,12 @@ import { WaterEffect } from './modules/WaterEffect.js';
 import { Planes } from './modules/Planes.js';
 
 /* eslint-disable-next-line */
-const locoScroll = new LocomotiveScroll({
-  el: document.querySelector('[data-scroll-container]'),
-  smooth: true,
-  smoothMobile: false,
-  inertia: 1.1,
-});
+// const locoScroll = new LocomotiveScroll({
+//   el: document.querySelector('[data-scroll-container]'),
+//   smooth: true,
+//   smoothMobile: false,
+//   inertia: 1.1,
+// });
 
 console.clear();
 // https://unsplash.com/photos/sqSYr_xXeCw
@@ -24,13 +24,12 @@ const image2 = require('../images/image-2.jpg');
 // https://unsplash.com/photos/8AKD0VFFYIs
 const image3 = require('../images/image-0.jpg');
 
-const images = [image1, image2, image3];
-console.log(images);
+let images = [image1];
 
-class App {
+export class App {
   constructor() {
     this.renderer = new THREE.WebGLRenderer({
-      antialias: false,
+      antialias: false
     });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.setPixelRatio(window.devicePixelRatio);
@@ -38,13 +37,13 @@ class App {
     this.composer = new EffectComposer(this.renderer);
 
     document.querySelector('.dist').append(this.renderer.domElement);
-    this.renderer.domElement.id = 'webGLApp';
+    this.renderer.domElement.id = "webGLApp";
 
     this.camera = new THREE.PerspectiveCamera(
       45,
       window.innerWidth / window.innerHeight,
       0.1,
-      10000,
+      10000
     );
     this.camera.position.z = 50;
     this.disposed = false;
@@ -60,13 +59,13 @@ class App {
     this.touchTexture = new TouchTexture();
 
     this.data = {
-      text: ["DON'T", 'LOOK', 'BACK'],
-      images,
+      text: ["localion", "LOOK", "BACK"],
+      images: images
     };
 
     this.subjects = [
       new Planes(this, images),
-      new Text(this, this.data.text[1]),
+      new Text(this, this.data.text[0])
     ];
     // this.subjects = [];
 
@@ -79,23 +78,19 @@ class App {
     this.loader = new Loader();
     this.loadAssets().then(this.init);
   }
-
   loadAssets() {
-    const { loader } = this;
-    const { assets } = this;
+    const loader = this.loader;
+    const assets = this.assets;
     return new Promise((resolve, reject) => {
       // loadTextAssets(assets, loader);
-      
+
       this.subjects.forEach(subject => subject.load(loader));
-      console.log(999, loader);
 
       loader.onComplete = () => {
-
         resolve();
       };
     });
   }
-
   onPlaneHover(i) {
     // const text = this.subjects[1];
     // if (i === 0) {
@@ -106,7 +101,6 @@ class App {
     //   text.updateText("BACK");
     // }
   }
-
   initComposer() {
     const renderPass = new RenderPass(this.scene, this.camera);
     this.waterEffect = new WaterEffect({ texture: this.touchTexture.texture });
@@ -116,10 +110,9 @@ class App {
     this.composer.addPass(renderPass);
     this.composer.addPass(waterPass);
   }
-
   init() {
     this.touchTexture.initTexture();
-    const { assets } = this;
+    const assets = this.assets;
 
     // const textGeometry2 = createGeometry({
     //   font: assets.font,
@@ -143,68 +136,63 @@ class App {
     // this.scene.add(textMesh2);
 
     this.initTextPlane();
-    
     this.addHitPlane();
-    console.log(this.subjects);
     this.subjects.forEach(subject => subject.init());
     this.initComposer();
-    
+
     // this.addImagePlane();
-    
-    console.log('########################################')
+
     this.tick();
 
-    window.addEventListener('resize', this.onResize);
-    window.addEventListener('mousemove', this.onMouseMove);
-    window.addEventListener('touchmove', this.onTouchMove);
+    document.querySelector('.dist').addEventListener("resize", this.onResize);
+    document.querySelector('.dist').addEventListener("mousemove", this.onMouseMove);
+    document.querySelector('.dist').addEventListener("touchmove", this.onTouchMove);
   }
-
   onTouchMove(ev) {
     const touch = ev.targetTouches[0];
     this.onMouseMove({ clientX: touch.clientX, clientY: touch.clientY });
   }
-
   onMouseMove(ev) {
-    const { raycaster } = this;
+    const raycaster = this.raycaster;
     this.mouse = {
       x: ev.clientX / window.innerWidth,
-      y: 1 - ev.clientY / window.innerHeight,
+      y: 1 - ev.clientY / window.innerHeight
     };
     this.touchTexture.addTouch(this.mouse);
 
     raycaster.setFromCamera(
       {
         x: (ev.clientX / window.innerWidth) * 2 - 1,
-        y: -(ev.clientY / window.innerHeight) * 2 + 1,
+        y: -(ev.clientY / window.innerHeight) * 2 + 1
       },
-      this.camera,
+      this.camera
     );
     // var intersections = raycaster.intersectObjects(this.hitObjects);
     // if (intersections.length > 0) {
     //   const intersect = intersections[0];
     //   this.touchTexture.addTouch(intersect.uv);
     // }
-    this.subjects.forEach((subject) => {
+    this.subjects.forEach(subject => {
+      console.log(subject, 55);
       if (subject.onMouseMove) {
         subject.onMouseMove(ev);
       }
     });
   }
-
   addImagePlane() {
     const viewSize = this.getViewSize();
 
-    const width = viewSize.width / 4.5;
+    let width = viewSize.width / 4.5;
 
     const geometry = new THREE.PlaneBufferGeometry(
       width,
       viewSize.height * 0.8,
       1,
-      1,
+      1
     );
-    const x = -viewSize.width / 2 + width / 2 + viewSize.width / 5 / 1.5;
+    let x = -viewSize.width / 2 + width / 2 + viewSize.width / 5 / 1.5;
 
-    const space = (viewSize.width - (viewSize.width / 5 / 1.5) * 2 - width) / 2;
+    let space = (viewSize.width - (viewSize.width / 5 / 1.5) * 2 - width) / 2;
     for (let i = 0; i < 3; i++) {
       const material = new THREE.MeshBasicMaterial({ color: 0x484848 });
       const mesh = new THREE.Mesh(geometry, material);
@@ -212,87 +200,83 @@ class App {
       this.scene.add(mesh);
     }
   }
-
   initTextPlane() {
-    const viewSize = this.getViewSize();
+    // const viewSize = this.getViewSize();
 
-    const geometry = new THREE.PlaneBufferGeometry(
-      viewSize.width,
-      viewSize.height,
-      1,
-      1,
-    );
-    const material = new THREE.ShaderMaterial({
-      uniforms: {
-        uMap: new THREE.Uniform(this.touchTexture.texture),
-        uLines: new THREE.Uniform(5),
-        uLineWidth: new THREE.Uniform(0.01),
-        uLineColor: new THREE.Uniform(new THREE.Color(0x202030)),
-      },
-      transparent: true,
-      fragmentShader: `
-        uniform sampler2D uMap;
-        uniform float uLines;
-        uniform float uLineWidth;
-        uniform vec3 uLineColor;
-        varying vec2 vUv;
-        void main(){
-          vec3 color = vec3(1.);
-          color = vec3(0.);
-          float line = step(0.5-uLineWidth/2.,fract(vUv.x * uLines)) - step(0.50 +uLineWidth/2.,fract(vUv.x * uLines));
-          color += line * uLineColor;
-          gl_FragColor = vec4(uLineColor,line);
-        }
-      `,
-      vertexShader: `
-        varying vec2 vUv;
+    // const geometry = new THREE.PlaneBufferGeometry(
+    //   viewSize.width,
+    //   viewSize.height,
+    //   1,
+    //   1
+    // );
+    // const material = new THREE.ShaderMaterial({
+    //   uniforms: {
+    //     uMap: new THREE.Uniform(this.touchTexture.texture),
+    //     uLines: new THREE.Uniform(5),
+    //     uLineWidth: new THREE.Uniform(0.01),
+    //     uLineColor: new THREE.Uniform(new THREE.Color(0x999999))
+    //   },
+    //   transparent: true,
+    //   fragmentShader: `
+    //     uniform sampler2D uMap;
+    //     uniform float uLines;
+    //     uniform float uLineWidth;
+    //     uniform vec3 uLineColor;
+    //     varying vec2 vUv;
+    //     void main(){
+    //       vec3 color = vec3(1.);
+    //       color = vec3(0.);
+    //       float line = step(0.5-uLineWidth/2.,fract(vUv.x * uLines)) - step(0.50 +uLineWidth/2.,fract(vUv.x * uLines));
+    //       color += line * uLineColor;
+    //       gl_FragColor = vec4(uLineColor,line);
+    //     }
+    //   `,
+    //   vertexShader: `
+    //     varying vec2 vUv;
 
-        void main(){
-          vec3 pos = position.xyz;
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.);
-          vUv = uv;
-        }
-      `,
-    });
-    const mesh = new THREE.Mesh(geometry, material);
-    mesh.position.z = -0.001;
-    this.scene.add(mesh);
+    //     void main(){
+    //       vec3 pos = position.xyz;
+    //       gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.);
+    //       vUv = uv;
+    //     }
+    //   `
+    // });
+    // const mesh = new THREE.Mesh(geometry, material);
+    // mesh.position.z = -0.001;
+    // this.scene.add(mesh);
   }
-
   addHitPlane() {
     const viewSize = this.getViewSize();
     const geometry = new THREE.PlaneBufferGeometry(
       viewSize.width,
       viewSize.height,
       1,
-      1,
+      1
     );
     const material = new THREE.MeshBasicMaterial();
     const mesh = new THREE.Mesh(geometry, material);
 
     this.hitObjects.push(mesh);
   }
-
   getViewSize() {
     const fovInRadians = (this.camera.fov * Math.PI) / 180;
     const height = Math.abs(
-      this.camera.position.z * Math.tan(fovInRadians / 2) * 2,
+      this.camera.position.z * Math.tan(fovInRadians / 2) * 2
     );
 
     return { width: height * this.camera.aspect, height };
   }
-
   dispose() {
     this.disposed = true;
-    window.removeEventListener('resize', this.onResize);
-    window.removeEventListener('mousemove', this.onMouseMove);
-    this.scene.children.forEach((child) => {
+    window.removeEventListener("resize", this.onResize);
+    window.removeEventListener("mousemove", this.onMouseMove);
+    this.scene.children.forEach(child => {
       child.material.dispose();
       child.geometry.dispose();
     });
     if (this.assets.glyphs) this.assets.glyphs.dispose();
 
-    this.hitObjects.forEach((child) => {
+    this.hitObjects.forEach(child => {
       if (child) {
         if (child.material) child.material.dispose();
         if (child.geometry) child.geometry.dispose();
@@ -304,33 +288,28 @@ class App {
     this.renderer.dispose();
     this.composer.dispose();
   }
-
   update() {
     this.touchTexture.update();
-    this.subjects.forEach((subject) => {
+    this.subjects.forEach(subject => {
       subject.update();
     });
   }
-
   render() {
     // this.renderer.render(this.scene, this.camera);
-    console.log(this.composer.render);
     this.composer.render(this.clock.getDelta());
   }
-
   tick() {
     if (this.disposed) return;
     this.render();
     this.update();
     requestAnimationFrame(this.tick);
   }
-
   onResize() {
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();
 
     this.composer.setSize(window.innerWidth, window.innerHeight);
-    this.subjects.forEach((subject) => {
+    this.subjects.forEach(subject => {
       subject.onResize(window.innerWidth, window.innerHeight);
     });
   }
@@ -341,20 +320,16 @@ class Loader {
     this.items = [];
     this.loaded = [];
   }
-
   begin(name) {
     this.items.push(name);
   }
-
   end(name) {
     this.loaded.push(name);
     if (this.loaded.length === this.items.length) {
       this.onComplete();
     }
   }
-
-  onComplete() {}
+  onComplete() { }
 }
-
 
 new App();

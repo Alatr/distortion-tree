@@ -32,9 +32,9 @@ const imageminJpegRecompress = require('imagemin-jpeg-recompress');
 const imageminPngquant = require('imagemin-pngquant');
 //svg
 const svgSprites = require("gulp-svg-sprites");
-const cheerio = require('gulp-cheerio');
-const cleanSvg = require('gulp-cheerio-clean-svg');
-// eslint
+// const cheerio = require('gulp-cheerio');
+// const cleanSvg = require('gulp-cheerio-clean-svg');
+// eslint;;
 const eslint = require('gulp-eslint');
 
 // type script
@@ -112,9 +112,9 @@ function watch() {
     gulp.watch(paths.gulpModules.src, gulpModules);
     if (typeScriptSetting) {
       gulp.watch(paths.ts.src, typeScript);
+      gulp.watch(paths.ts.src, testJsLint);
     }
     
-		gulp.watch(paths.ts.src, testJsLint);
 		gulp.watch(paths.images.src, images);
 		gulp.watch(paths.fonts.src, fonts);
 		gulp.watch(paths.libs.src, libs);
@@ -310,13 +310,15 @@ if (webPackSetting) {
 }
 if (typeScriptSetting) {
   exports.typeScript = typeScript;
+  exports.testJsLint = testJsLint;
   additionalTask.push(typeScript)
+  additionalTask.push(testJsLint)
+
 }
 
 
 
 exports.gulpModules = gulpModules;
-exports.testJsLint = testJsLint;
 exports.images = images;
 exports.clean = clean;
 exports.fonts = fonts;
@@ -332,7 +334,7 @@ gulp.task('default', gulp.series(
 		clean,
     libs,
     ...additionalTask,
-		gulp.parallel(styles, templates, fonts, gulpModules, testJsLint, images, static),
+		gulp.parallel(styles, templates, fonts, gulpModules, images, static),
 		gulp.parallel(watch, server)
 ));
 

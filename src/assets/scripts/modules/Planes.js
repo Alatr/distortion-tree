@@ -53,16 +53,17 @@ export class Planes {
     );
     this.uniforms.uPlaneSize.needsUpdate = true;
 
-    const translateToLeft = -width / 2 + planeMetrics.planeWidth / 2;
+    const translateToLeft = -width / 3 + planeMetrics.planeWidth / 2;
     const x = translateToLeft + planeMetrics.x;
 
     const { space } = planeMetrics;
-    for (let i = 0; i < 3; i++) {
+    // for (let i = 0; i < 3; i++) {
+      let i = 0;
       const texture = this.textures[i];
       const material = new THREE.ShaderMaterial({
         uniforms: {
           uZoom: new THREE.Uniform(0),
-          uZoomDelta: new THREE.Uniform(0.2),
+          uZoomDelta: new THREE.Uniform(0.1),
           uPlaneSize: this.uniforms.uPlaneSize,
           uImage: new THREE.Uniform(texture),
           uImageSize: new THREE.Uniform(
@@ -77,11 +78,11 @@ export class Planes {
         vertexShader,
       });
       const mesh = new THREE.Mesh(geometry, material);
-      mesh.position.x = x + i * space;
+      // mesh.position.x = x + i * space;
       mesh.userData.index = i;
       this.meshes.push(mesh);
       this.sceneManager.scene.add(mesh);
-    }
+    // }
   }
 
   onMouseMove(ev) {
@@ -105,7 +106,8 @@ export class Planes {
 
   update() {
     const { meshes } = this;
-    for (let i = 0; i < 3; i++) {
+    // for (let i = 0; i < 3; i++) {
+      let i = 0;
       const zoomTarget = this.hovering === i ? 1 : 0;
       const { uZoom } = meshes[i].material.uniforms;
 
@@ -114,11 +116,12 @@ export class Planes {
         uZoom.value += zoomChange;
         uZoom.needsUpdate = true;
       }
-    }
+    // }
   }
 
   getPlaneMetrics(viewWidth, viewHeight, width, height) {
-    const planeWidth = viewWidth / 4.5;
+    // const planeWidth = viewWidth / 4.5;
+    const planeWidth = viewWidth / 1;
     if (width < 800) {
       return {
         planeWidth: viewWidth / 3,
@@ -130,7 +133,8 @@ export class Planes {
     }
     return {
       planeWidth,
-      planeHeight: viewHeight * 0.8,
+      // planeHeight: viewHeight * 0.8,
+      planeHeight: viewHeight * 1,
       x: viewWidth / 5 / 1.5,
       // Calculate the resting(empty) space and divided by number of planes
       space: (viewWidth - (viewWidth / 5 / 1.5) * 2 - planeWidth) / 2,
@@ -207,7 +211,7 @@ void main() {
     uv = withRatio(uv, uPlaneSize, uImageSize);
     vec3 tex = texture2D(uImage, uv).xyz;
   vec3 color = vec3(0.2 + uZoom * 0.5);
-  color = mix(greyScale(tex)*0.5, tex, uZoom);
+  color = mix(tex, tex, uZoom);
   gl_FragColor = vec4(color,1.);
 }`;
 const vertexShader = `

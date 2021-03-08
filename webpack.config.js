@@ -3,24 +3,25 @@ const webpack = require('webpack');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 const config = {
-    mode: 'development',
+    // mode: 'development',
+  mode: 'production',
     entry: {
         index: "./src/assets/scripts/index-app.js"
     },
     output: {
-        filename: "[name].bundle.js"
+        filename: "wather-three.js"
     },
-    optimization: {
-        splitChunks: {
-            cacheGroups: {
-                commons: {
-                    test: /[\\/]node_modules[\\/]/,
-                    name: 'vendors',
-                    chunks: 'all'
-                }
-            }
-        }
-    },
+    // optimization: {
+    //     splitChunks: {
+    //         cacheGroups: {
+    //             commons: {
+    //                 test: /[\\/]node_modules[\\/]/,
+    //                 name: 'vendors',
+    //                 chunks: 'all'
+    //             }
+    //         }
+    //     }
+    // },
     module: {
       rules: [
         {
@@ -36,14 +37,14 @@ const config = {
           options: {
             name: '[path][name].[ext]',
             // publicPath: 'assets',
-              outputPath: (url, resourcePath, context) => {
-                // `resourcePath` is original absolute path to asset
-                // `context` is directory where stored asset (`rootContext`) or `context` option
+            //   outputPath: (url, resourcePath, context) => {
+            //     // `resourcePath` is original absolute path to asset
+            //     // `context` is directory where stored asset (`rootContext`) or `context` option
 
-                // To get relative path you can use
-                const relativePath = path.relative(context, resourcePath);
-                return relativePath.replace(/src/, '')
-            },
+            //     // To get relative path you can use
+            //     const relativePath = path.relative(context, resourcePath);
+            //     return relativePath.replace(/src/, '')
+            // },
           },
         },
       ],

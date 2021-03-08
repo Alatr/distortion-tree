@@ -1,31 +1,20 @@
-import LocomotiveScroll from 'locomotive-scroll';
-
 
 import * as THREE from 'three';
+
+global.THREE = THREE;
+
 import { EffectComposer, RenderPass, EffectPass } from 'postprocessing';
 import { Text } from './modules/Text.js';
 import TouchTexture from './modules/TouchTexture.js';
 import { WaterEffect } from './modules/WaterEffect.js';
 import { Planes } from './modules/Planes.js';
 
-/* eslint-disable-next-line */
-// const locoScroll = new LocomotiveScroll({
-//   el: document.querySelector('[data-scroll-container]'),
-//   smooth: true,
-//   smoothMobile: false,
-//   inertia: 1.1,
-// });
-
-console.clear();
 // https://unsplash.com/photos/sqSYr_xXeCw
-const image1 = require('../images/image-1.jpg');
-// https://unsplash.com/photos/gPvqQOAOXCw
-const image2 = require('../images/image-2.jpg');
-// https://unsplash.com/photos/8AKD0VFFYIs
-const image3 = require('../images/image-0.jpg');
+const canvasWrap = document.querySelector('[data-canvas-wrap]');
+const image1 = canvasWrap.dataset.canvasImg;
 
 let images = [image1];
-
+console.log(images);
 export class App {
   constructor() {
     this.renderer = new THREE.WebGLRenderer({
@@ -36,8 +25,8 @@ export class App {
 
     this.composer = new EffectComposer(this.renderer);
 
-    document.querySelector('.dist').append(this.renderer.domElement);
-    this.renderer.domElement.id = "webGLApp";
+    canvasWrap.append(this.renderer.domElement);
+    this.renderer.domElement.id = "three-wather";
 
     this.camera = new THREE.PerspectiveCamera(
       45,
@@ -59,13 +48,13 @@ export class App {
     this.touchTexture = new TouchTexture();
 
     this.data = {
-      text: ["localion", "LOOK", "BACK"],
+      text: ["loca\nlion", "LOOK", "BACK"],
       images: images
     };
 
     this.subjects = [
       new Planes(this, images),
-      new Text(this, this.data.text[0])
+      // new Text(this, this.data.text[0])
     ];
     // this.subjects = [];
 
@@ -144,9 +133,9 @@ export class App {
 
     this.tick();
 
-    document.querySelector('.dist').addEventListener("resize", this.onResize);
-    document.querySelector('.dist').addEventListener("mousemove", this.onMouseMove);
-    document.querySelector('.dist').addEventListener("touchmove", this.onTouchMove);
+    canvasWrap.addEventListener("resize", this.onResize);
+    canvasWrap.addEventListener("mousemove", this.onMouseMove);
+    canvasWrap.addEventListener("touchmove", this.onTouchMove);
   }
   onTouchMove(ev) {
     const touch = ev.targetTouches[0];
@@ -173,7 +162,6 @@ export class App {
     //   this.touchTexture.addTouch(intersect.uv);
     // }
     this.subjects.forEach(subject => {
-      console.log(subject, 55);
       if (subject.onMouseMove) {
         subject.onMouseMove(ev);
       }

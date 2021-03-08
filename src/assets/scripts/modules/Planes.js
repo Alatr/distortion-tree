@@ -21,7 +21,7 @@ export class Planes {
     for (let i = 0; i < this.images.length; i++) {
       loader.begin(`image-${i}`);
       const textureLoader = new THREE.TextureLoader();
-      textureLoader.load(this.images[i].default, (image) => {
+      textureLoader.load(this.images[i], (image) => {
         this.textures[i] = image;
         loader.end(`image-${i}`);
       },
@@ -122,15 +122,15 @@ export class Planes {
   getPlaneMetrics(viewWidth, viewHeight, width, height) {
     // const planeWidth = viewWidth / 4.5;
     const planeWidth = viewWidth / 1;
-    if (width < 800) {
-      return {
-        planeWidth: viewWidth / 3,
-        planeHeight: viewHeight * 0.8,
-        x: 0,
-        // Calculate the resting(empty) space and divided by number of planes
-        space: viewWidth / 3,
-      };
-    }
+    // if (width < 800) {
+    //   return {
+    //     planeWidth: viewWidth / 3,
+    //     planeHeight: viewHeight * 0.8,
+    //     x: 0,
+    //     // Calculate the resting(empty) space and divided by number of planes
+    //     space: viewWidth / 3,
+    //   };
+    // }
     return {
       planeWidth,
       // planeHeight: viewHeight * 0.8,
